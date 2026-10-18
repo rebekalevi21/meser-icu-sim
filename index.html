@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICU SIM-MASTER | פלטפורמת הכנה לבחינת מ.ס.ר בעל-בסיסי טיפול נמרץ (Morton 12)</title>
+  <meta name="description" content="פלטפורמת אימון וסימולציה בזמן אמת להכנה לבחינת הרישוי המעשית במ.ס.ר לקורס על-בסיסי בטיפול נמרץ כללי לפי ספר מורטון מהדורה 12.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Application Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>ICU SIM-MASTER • מ.ס.ר טיפול נמרץ</h1>
+        <p>הכנה מתודית לבחינת הרישוי המעשית • מבוסס Morton 12th Edition</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-view="simulator-view">
+        <span>🎯</span> <span>זירת הסימולציה הקלינית</span>
+      </button>
+      <button class="nav-btn" data-view="actor-view">
+        <span>🎭</span> <span>תחנת שחקן (3 שלבים)</span>
+      </button>
+      <button class="nav-btn" data-view="decoder-view">
+        <span>🧩</span> <span>פענוח שאלת הבוחן</span>
+      </button>
+      <button class="nav-btn" data-view="protocols-view">
+        <span>📚</span> <span>מאגר פרוטוקולים</span>
+      </button>
+      <button class="nav-btn" data-view="sbar-view">
+        <span>🎙️</span> <span>אימון SBAR</span>
+      </button>
+      <button class="nav-btn" data-view="briefing-view">
+        <span>🏛️</span> <span>חדר תדרוך ומתודיקה</span>
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button id="btn-toggle-sound" class="btn-icon-pill active">
+        <span>🔊</span> <span>צליל מוניטור פעיל</span>
+      </button>
+      <button class="btn-icon-pill" onclick="window.print()">
+        <span>🖨️</span> <span>הדפס דפי כיס</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="main-wrapper">
+
+    <!-- 1. SIMULATOR VIEW (זירת הסימולציה הקלינית) -->
+    <section id="simulator-view" class="view-section active">
+      <div class="simulator-container">
+        
+        <!-- Top Station Control Bar -->
+        <div class="station-top-bar">
+          <div class="station-title-group">
+            <span id="station-scenario-badge" class="scenario-badge">המודינמיקה וספסיס</span>
+            <div>
+              <h2 id="station-scenario-title">הלם ספטי רפרקטורי וסערת ציטוקינים</h2>
+              <span style="font-size:0.75rem; color:#94a3b8;">תרחיש מונחה בוחן • סכמת ABCDE + מחוון סגור</span>
+            </div>
+          </div>
+
+          <!-- Scenario Switcher -->
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <label style="font-size:0.8rem; color:#94a3b8;">בחר תרחיש:</label>
+            <select id="scenario-selector" class="btn-outline" style="background:#0f172a; color:#fff;" onchange="window.icuSimulator.loadScenario(this.selectedIndex)">
+              <option value="0">תרחיש 1: הלם ספטי רפרקטורי וסערת ציטוקינים</option>
+              <option value="1">תרחיש 2: כשל נשימתי חריף ו-ARDS סוער (ARDSnet)</option>
+              <option value="2">תרחיש 3: הלם קרדיוגני ובצקת ריאות חריפה</option>
+              <option value="3">תרחיש 4: חזה אוויר בלחץ תחת הנשמה מכנית</option>
+            </select>
+          </div>
+
+          <!-- 12-Minute Countdown Timer -->
+          <div class="station-timer-box">
+            <div>
+              <div class="timer-label">זמן תחנה נותר:</div>
+              <div id="station-timer-digits" class="timer-digits">12:00</div>
+            </div>
+          </div>
+
+          <!-- Right Buttons -->
+          <div class="station-controls-right">
+            <button class="btn-primary" onclick="window.icuSimulator.openSbarModal()">
+              <span>📝</span> <span>סיום ומסירת SBAR</span>
+            </button>
+            <button class="btn-outline" onclick="window.icuSimulator.renderDoorChart()">
+              <span>📋</span> <span>דף דלת</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulation Arena: Split View (Monitor vs Decision Engine) -->
+        <div class="station-arena">
+          
+          <!-- Left: Clinical ICU Monitor -->
+          <div class="icu-monitor-panel">
+            <div class="monitor-top-status">
+              <div style="display:flex; gap:0.75rem; align-items:center;">
+                <span class="patient-bed-tag">BED 04 - ICU</span>
+                <span style="color:#f8fafc; font-weight:700;">משה כהן, 64</span>
+                <span>P-PostOp Day 3</span>
+              </div>
+              <div style="display:flex; gap:1rem; align-items:center;">
+                <span style="color:#00ff88;">• TELEMETRY ACTIVE</span>
+                <span style="color:#38bdf8;">A-LINE 0-300 mmHg</span>
+              </div>
+            </div>
+
+            <!-- Monitor Waveforms & Numeric Displays -->
+            <div class="monitor-screen">
+              
+              <!-- ECG Lead II Waveform -->
+              <div class="waveform-row ecg-signal">
+                <div class="waveform-canvas-box">
+                  <span class="waveform-lead-label">ECG II (mV)</span>
+                  <canvas id="ecg-canvas"></canvas>
+                </div>
+                <div class="monitor-numeric-box">
+                  <div class="num-label"><span>HR</span><span>bpm</span></div>
+                  <div id="num-hr" class="num-value">128</div>
+                  <div class="num-sub">Sinus Tachycardia</div>
+                </div>
+              </div>
+
+              <!-- Arterial Blood Pressure Waveform -->
+              <div class="waveform-row art-signal">
+                <div class="waveform-canvas-box">
+                  <span class="waveform-lead-label">ART (mmHg)</span>
+                  <canvas id="art-canvas"></canvas>
+                </div>
+                <div class="monitor-numeric-box">
+                  <div class="num-label"><span>ABP</span><span>SYS/DIA</span></div>
+                  <div id="num-abp" class="num-value" style="font-size:1.6rem;">74/42</div>
+                  <div id="num-map" class="num-sub" style="color:#ff3366; font-weight:700;">(52 MAP)</div>
+                </div>
+              </div>
+
+              <!-- SpO2 Plethysmograph Waveform -->
+              <div class="waveform-row spo2-signal">
+                <div class="waveform-canvas-box">
+                  <span class="waveform-lead-label">Pleth (SpO2)</span>
+                  <canvas id="spo2-canvas"></canvas>
+                </div>
+                <div class="monitor-numeric-box">
+                  <div class="num-label"><span>SpO2</span><span>%</span></div>
+                  <div id="num-spo2" class="num-value">91</div>
+                  <div class="num-sub">FiO2 45%</div>
+                </div>
+              </div>
+
+              <!-- Capnography ETCO2 Waveform -->
+              <div class="waveform-row etco2-signal">
+                <div class="waveform-canvas-box">
+                  <span class="waveform-lead-label">Capno (ETCO2)</span>
+                  <canvas id="etco2-canvas"></canvas>
+                </div>
+                <div class="monitor-numeric-box">
+                  <div class="num-label"><span>ETCO2</span><span>mmHg</span></div>
+                  <div id="num-etco2" class="num-value">29</div>
+                  <div class="num-sub">RR: <span id="num-rr">26</span> /min</div>
+                </div>
+              </div>
+
+              <!-- Secondary Vitals Bar -->
+              <div class="secondary-vitals-bar">
+                <div class="vital-chip">
+                  <span class="vital-chip-label">CVP (mmHg):</span>
+                  <span id="num-cvp" class="vital-chip-val" style="color:#38bdf8;">4</span>
+                </div>
+                <div class="vital-chip">
+                  <span class="vital-chip-label">חום גוף (°C):</span>
+                  <span id="num-temp" class="vital-chip-val" style="color:#f87171;">39.2</span>
+                </div>
+                <div class="vital-chip">
+                  <span class="vital-chip-label">שתן שפכי:</span>
+                  <span class="vital-chip-val" style="color:#f59e0b;">< 10 ml/h</span>
+                </div>
+                <div class="vital-chip">
+                  <span class="vital-chip-label">RASS סדציה:</span>
+                  <span class="vital-chip-val" style="color:#c084fc;">-2 (קל)</span>
+                </div>
+              </div>
+
+              <!-- Ventilator Strip -->
+              <div class="vent-strip">
+                <div class="vent-cell">
+                  <div class="vent-cell-label">Mode</div>
+                  <div id="vent-val-mode" class="vent-cell-val">VCV</div>
+                </div>
+                <div class="vent-cell">
+                  <div class="vent-cell-label">Vt (ml)</div>
+                  <div id="vent-val-vt" class="vent-cell-val">460</div>
+                </div>
+                <div class="vent-cell">
+                  <div class="vent-cell-label">RR Set/Tot</div>
+                  <div id="vent-val-rr" class="vent-cell-val">18/26</div>
+                </div>
+                <div class="vent-cell">
+                  <div class="vent-cell-label">PEEP</div>
+                  <div id="vent-val-peep" class="vent-cell-val">6</div>
+                </div>
+                <div class="vent-cell">
+                  <div class="vent-cell-label">FiO2</div>
+                  <div id="vent-val-fio2" class="vent-cell-val">45%</div>
+                </div>
+                <div class="vent-cell">
+                  <div class="vent-cell-label">Ppeak</div>
+                  <div id="vent-val-ppeak" class="vent-cell-val">24</div>
+                </div>
+                <div class="vent-cell">
+                  <div class="vent-cell-label">Pplat</div>
+                  <div id="vent-val-pplat" class="vent-cell-val">19</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Right: Interactive Decision Engine & Operator Feed -->
+          <div class="decision-engine-panel">
+            
+            <!-- Decision Tabs -->
+            <div class="decision-tabs">
+              <button class="decision-tab-btn active" data-pane="pane-actions">
+                <span>⚡</span> <span>פעולות ABCDE מיידיות</span>
+              </button>
+              <button class="decision-tab-btn" data-pane="pane-labs">
+                <span>🧪</span> <span>תיק מטופל ומעבדות (ABG)</span>
+              </button>
+              <button class="decision-tab-btn" data-pane="pane-feed">
+                <span>📡</span> <span>יומן מפעיל הסימולטור</span>
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="decision-tab-content">
+              
+              <!-- Pane 1: Clinical Actions Grid -->
+              <div id="pane-actions" class="tab-pane active">
+                <div style="font-size:0.82rem; color:#94a3b8; margin-bottom:0.4rem;">
+                  בחר/י פעולות קליניות לביצוע. כל בחירה משנה את המוניטור בזמן אמת ונרשמת לטופס המחוון של הבוחן.
+                  <span style="color:#ef4444; font-weight:700;">זהירות ממלכודות שגיאה פוסלת (Red Flags)!</span>
+                </div>
+                <div id="actions-container"></div>
+              </div>
+
+              <!-- Pane 2: Labs & Diagnostics -->
+              <div id="pane-labs" class="tab-pane">
+                <div id="labs-container" style="display:flex; flex-direction:column; gap:1rem;"></div>
+              </div>
+
+              <!-- Pane 3: Operator Feed Log -->
+              <div id="pane-feed" class="tab-pane">
+                <div style="font-size:0.85rem; color:#38bdf8; margin-bottom:0.4rem; font-weight:700;">
+                  יומן תגובות מפעיל הסימולטור (Live MSR Station Log):
+                </div>
+                <div id="operator-feed-box" class="operator-feed" style="height:360px;"></div>
+              </div>
+
+            </div>
+
+            <!-- Bottom Quick Status & Operator Mini Feed -->
+            <div style="padding:0.75rem 1.25rem; background:#080c14; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.8rem; color:#94a3b8;">
+                ספר מנחה: <strong style="color:#fff;">Morton 12th Ed.</strong> • מחוון משרד הבריאות
+              </span>
+              <button class="btn-primary" style="padding:0.45rem 1rem; font-size:0.82rem;" onclick="window.icuSimulator.openSbarModal()">
+                סיים תחנה ומסור SBAR לרופא ←
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. ACTOR STATION VIEW (תחנת שחקן ותקשורת) -->
+    <section id="actor-view" class="view-section">
+      <div id="actor-station-content"></div>
+    </section>
+
+    <!-- 3. PROMPT DECODER VIEW (פענוח שאלת הבוחן) -->
+    <section id="decoder-view" class="view-section">
+      <div id="decoder-content-area"></div>
+    </section>
+
+    <!-- 4. PROTOCOLS VIEW (מאגר פרוטוקולים וסרגלי מורטון) -->
+    <section id="protocols-view" class="view-section">
+      <div id="protocols-content-area"></div>
+    </section>
+
+    <!-- 5. SBAR VIEW (אימון SBAR והעברת מקרה) -->
+    <section id="sbar-view" class="view-section">
+      <div id="sbar-content-area"></div>
+    </section>
+
+    <!-- 6. BRIEFING VIEW (חדר תדרוך ומתודיקה) -->
+    <section id="briefing-view" class="view-section">
+      <div id="briefing-content-area"></div>
+    </section>
+
+  </main>
+
+  <!-- Door Chart Modal (Outside the Station Door) -->
+  <div id="door-chart-modal" class="door-chart-overlay" style="display:none;"></div>
+
+  <!-- SBAR Submission Requirement Modal -->
+  <div id="sbar-submission-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:720px;">
+      <div class="modal-header">
+        <h3 style="color:#fff; font-size:1.2rem;">🎙️ דיווח SBAR מסכם (חובה לפני חשיפת ציוני המחוון)</h3>
+        <button class="btn-outline" style="padding:0.2rem 0.6rem;" onclick="document.getElementById('sbar-submission-modal').style.display='none'">✕</button>
+      </div>
+      <div class="modal-body" style="gap:1rem;">
+        <div style="background:rgba(245, 158, 11, 0.1); border-right:4px solid #f59e0b; padding:0.75rem 1rem; border-radius:6px; font-size:0.85rem; color:#fde68a;">
+          בדקה האחרונה של התחנה, הבוחן מצפה ממך לעצור כל פעולה ולמסור דיווח SBAR חד ומדויק לרופא התורן או למחליפה שלך.
+        </div>
+
+        <div class="sbar-section-box">
+          <label style="font-weight:700; color:#ef4444; font-size:0.85rem;"><span class="sbar-letter-tag sbar-letter-s">S</span> Situation (המצב המיידי):</label>
+          <textarea id="sim-sbar-s" class="sbar-textarea" style="min-height:55px;" placeholder="שם המטופל, סיבת ההידרדרות כרגע, מדדים קריטיים..."></textarea>
+        </div>
+
+        <div class="sbar-section-box">
+          <label style="font-weight:700; color:#f59e0b; font-size:0.85rem;"><span class="sbar-letter-tag sbar-letter-b">B</span> Background (רקע רלוונטי):</label>
+          <textarea id="sim-sbar-b" class="sbar-textarea" style="min-height:55px;" placeholder="יום אשפוז, ניתוח/טראומה, מצב לפני האירוע..."></textarea>
+        </div>
+
+        <div class="sbar-section-box">
+          <label style="font-weight:700; color:#06b6d4; font-size:0.85rem;"><span class="sbar-letter-tag sbar-letter-a">A</span> Assessment (הערכה ופעולות שבוצעו):</label>
+          <textarea id="sim-sbar-a" class="sbar-textarea" style="min-height:55px;" placeholder="מה לדעתך קורה לפי מורטון, מה עשית עד כה (נוזלים, תרופות, שינויי מנשם) ומה התגובה..."></textarea>
+        </div>
+
+        <div class="sbar-section-box">
+          <label style="font-weight:700; color:#10b981; font-size:0.85rem;"><span class="sbar-letter-tag sbar-letter-r">R</span> Recommendation (המלצה וצעדים מיידיים):</label>
+          <textarea id="sim-sbar-r" class="sbar-textarea" style="min-height:55px;" placeholder="מה את מבקשת מהרופא? (בדיקת רופא, התאמת מינון, הכנסת ליין, בדיקות חוזרות)..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="window.icuSimulator.submitStationSbar()">הגש דיווח וחשוף דוח Debriefing 📊</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debriefing & Morton 12 Rubric Modal -->
+  <div id="debrief-modal" class="modal-overlay" style="display:none;"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/audio.js"></script>
+  <script src="js/monitor.js"></script>
+  <script src="js/data/scenarios.js"></script>
+  <script src="js/data/protocols.js"></script>
+  <script src="js/decoder.js"></script>
+  <script src="js/actor_station.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/protocols_view.js"></script>
+  <script src="js/sbar.js"></script>
+  <script src="js/briefing.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

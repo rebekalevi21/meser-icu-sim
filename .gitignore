@@ -1,0 +1,13 @@
+# Ignore heavy files, personal files, and system files
+*.pdf
+*.pptx
+*.ppt
+*.docx
+*.doc
+*.HEIC
+*.jpg
+*.jpeg
+*.png
+scratch/
+.DS_Store
+*.log
