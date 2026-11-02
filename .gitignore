@@ -8,6 +8,7 @@
 *.jpg
 *.jpeg
 *.png
+!img/**
 scratch/
 .DS_Store
 *.log
