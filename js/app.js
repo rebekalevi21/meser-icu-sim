@@ -5,6 +5,7 @@ class ICUApp {
   }
 
   init() {
+    this.setupAccessGate();
     this.setupNavigation();
     this.setupAudioToggle();
 
@@ -22,6 +23,51 @@ class ICUApp {
 
     // Decision tabs inside the simulator
     this.setupDecisionTabs();
+  }
+
+  setupAccessGate() {
+    const overlay = document.getElementById('access-gate-overlay');
+    if (!overlay) return;
+
+    if (sessionStorage.getItem('meser_icu_unlocked') === 'true') {
+      overlay.style.display = 'none';
+      document.body.classList.remove('locked-body');
+    } else {
+      const input = document.getElementById('access-code-input');
+      if (input) {
+        setTimeout(() => input.focus(), 100);
+        input.addEventListener('input', () => {
+          const err = document.getElementById('access-error-msg');
+          if (err) err.style.display = 'none';
+        });
+      }
+    }
+  }
+
+  verifyAccessCode() {
+    const input = document.getElementById('access-code-input');
+    const errorMsg = document.getElementById('access-error-msg');
+    const card = document.getElementById('access-gate-card');
+    const overlay = document.getElementById('access-gate-overlay');
+    if (!input || !overlay) return;
+
+    const code = input.value.trim().toLowerCase();
+    if (code === '1234r') {
+      sessionStorage.setItem('meser_icu_unlocked', 'true');
+      overlay.classList.add('fade-out');
+      document.body.classList.remove('locked-body');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 280);
+    } else {
+      if (errorMsg) errorMsg.style.display = 'block';
+      if (card) {
+        card.classList.remove('shake-error');
+        void card.offsetWidth;
+        card.classList.add('shake-error');
+      }
+      input.select();
+    }
   }
 
   setupNavigation() {

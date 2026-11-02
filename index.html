@@ -15,7 +15,43 @@
   <link rel="icon" type="image/jpeg" href="img/logo-badge.jpg">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="locked-body">
+
+  <!-- Access Code Gate Overlay -->
+  <div id="access-gate-overlay" class="access-gate-overlay">
+    <div class="access-gate-card" id="access-gate-card">
+      <div class="access-gate-logo-wrap">
+        <img src="img/logo-badge.jpg" alt="לוגו רבקה אליה - RN, CCN, MPH" class="access-gate-logo">
+      </div>
+      <div class="access-gate-badge">🔒 כניסה מורשית בלבד</div>
+      <h2 class="access-gate-title">ICU SIM-MASTER • מ.ס.ר טיפול נמרץ</h2>
+      <p class="access-gate-subtitle">פלטפורמת אימון וסימולציה לבחינת הרישוי המעשית (Morton 12e)<br>פותח ע"י <strong>רבקה אליה, RN, CCN, MPH</strong></p>
+
+      <form id="access-gate-form" class="access-gate-form" onsubmit="event.preventDefault(); window.icuApp.verifyAccessCode();">
+        <label for="access-code-input" class="access-gate-label">הזיני קוד כניסה למערכת:</label>
+        <div class="access-input-group">
+          <input
+            type="password"
+            id="access-code-input"
+            class="access-code-input"
+            placeholder="קוד גישה..."
+            dir="ltr"
+            autocomplete="off"
+            autofocus
+            required
+          >
+          <button type="submit" class="btn-primary access-submit-btn">כניסה למערכת 🚀</button>
+        </div>
+        <div id="access-error-msg" class="access-error-msg" style="display:none;">
+          ❌ קוד הגישה שגוי. אנא נסי שנית.
+        </div>
+      </form>
+
+      <div class="access-gate-footer">
+        © 2026 כל הזכויות שמורות לרבקה אליה, RN, CCN, MPH
+      </div>
+    </div>
+  </div>
 
   <!-- Top Application Header -->
   <header class="app-header">
