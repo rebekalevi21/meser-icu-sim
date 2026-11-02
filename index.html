@@ -13,45 +13,84 @@
   
   <!-- Styles -->
   <link rel="icon" type="image/jpeg" href="img/logo-badge.jpg">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <style>
+    body.locked-body {
+      overflow: hidden !important;
+      background: #05080f !important;
+    }
+    body.locked-body > .app-header,
+    body.locked-body > .main-wrapper,
+    body.locked-body > .app-footer {
+      display: none !important;
+    }
+    #access-gate-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: radial-gradient(circle at 50% 25%, rgba(15, 23, 42, 0.98) 0%, rgba(5, 8, 15, 1) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+  </style>
 </head>
 <body class="locked-body">
 
   <!-- Access Code Gate Overlay -->
   <div id="access-gate-overlay" class="access-gate-overlay">
-    <div class="access-gate-card" id="access-gate-card">
-      <div class="access-gate-logo-wrap">
-        <img src="img/logo-badge.jpg" alt="לוגו רבקה אליה - RN, CCN, MPH" class="access-gate-logo">
+    <div class="access-gate-card" id="access-gate-card" style="width:100%; max-width:460px; background:linear-gradient(180deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.98) 100%); border:1.5px solid rgba(212,175,55,0.5); border-radius:20px; padding:2.25rem 2rem; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.7); display:flex; flex-direction:column; align-items:center; gap:0.9rem;">
+      <div class="access-gate-logo-wrap" style="width:120px; height:106px; border-radius:14px; overflow:hidden; border:2px solid rgba(212,175,55,0.75); background:#f4f1ea;">
+        <img src="img/logo-badge.jpg" alt="לוגו רבקה אליה - RN, CCN, MPH" class="access-gate-logo" style="width:100%; height:100%; object-fit:cover; display:block;">
       </div>
-      <div class="access-gate-badge">🔒 כניסה מורשית בלבד</div>
-      <h2 class="access-gate-title">ICU SIM-MASTER • מ.ס.ר טיפול נמרץ</h2>
-      <p class="access-gate-subtitle">פלטפורמת אימון וסימולציה לבחינת הרישוי המעשית (Morton 12e)<br>פותח ע"י <strong>רבקה אליה, RN, CCN, MPH</strong></p>
+      <div class="access-gate-badge" style="background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.45); color:#fde68a; font-size:0.8rem; font-weight:700; padding:0.25rem 0.9rem; border-radius:999px;">🔒 כניסה מורשית באמצעות קוד</div>
+      <h2 class="access-gate-title" style="font-size:1.35rem; font-weight:800; color:#38bdf8;">ICU SIM-MASTER • מ.ס.ר טיפול נמרץ</h2>
+      <p class="access-gate-subtitle" style="font-size:0.86rem; color:#94a3b8; line-height:1.55;">פלטפורמת אימון וסימולציה לבחינת הרישוי המעשית (Morton 12e)<br>פותח ע"י <strong style="color:#f3c68f;">רבקה אליה, RN, CCN, MPH</strong></p>
 
-      <form id="access-gate-form" class="access-gate-form" onsubmit="event.preventDefault(); window.icuApp.verifyAccessCode();">
-        <label for="access-code-input" class="access-gate-label">הזיני קוד כניסה למערכת:</label>
-        <div class="access-input-group">
+      <form id="access-gate-form" class="access-gate-form" style="width:100%; margin-top:0.5rem; display:flex; flex-direction:column; gap:0.75rem;" onsubmit="event.preventDefault(); window.unlockMeserPlatform();">
+        <label for="access-code-input" class="access-gate-label" style="font-size:0.88rem; font-weight:700; color:#e2e8f0; text-align:right;">הזיני קוד כניסה לאתר הסימולציה:</label>
+        <div class="access-input-group" style="display:flex; flex-direction:column; gap:0.65rem;">
           <input
             type="password"
             id="access-code-input"
             class="access-code-input"
-            placeholder="קוד גישה..."
+            style="width:100%; padding:0.85rem 1rem; border-radius:10px; border:1.5px solid #334155; background:#0a0e17; color:#fff; font-size:1.15rem; font-weight:700; text-align:center; letter-spacing:0.15em; outline:none;"
+            placeholder="הזיני קוד..."
             dir="ltr"
             autocomplete="off"
             autofocus
             required
           >
-          <button type="submit" class="btn-primary access-submit-btn">כניסה למערכת 🚀</button>
+          <button type="submit" class="btn-primary access-submit-btn" style="width:100%; justify-content:center; padding:0.85rem 1.4rem; font-size:1rem;">כניסה למערכת 🚀</button>
         </div>
-        <div id="access-error-msg" class="access-error-msg" style="display:none;">
-          ❌ קוד הגישה שגוי. אנא נסי שנית.
+        <div id="access-error-msg" class="access-error-msg" style="display:none; background:rgba(239,68,68,0.16); border:1px solid rgba(239,68,68,0.5); color:#fca5a5; font-size:0.85rem; font-weight:700; padding:0.55rem 0.75rem; border-radius:8px;">
+          ❌ קוד הגישה שגוי. יש להזין את הקוד המורשה.
         </div>
       </form>
 
-      <div class="access-gate-footer">
+      <div class="access-gate-footer" style="margin-top:0.5rem; padding-top:0.85rem; border-top:1px solid rgba(255,255,255,0.08); width:100%; font-size:0.76rem; color:#64748b;">
         © 2026 כל הזכויות שמורות לרבקה אליה, RN, CCN, MPH
       </div>
     </div>
   </div>
+  <script>
+    window.unlockMeserPlatform = function() {
+      var input = document.getElementById('access-code-input');
+      var errorMsg = document.getElementById('access-error-msg');
+      var overlay = document.getElementById('access-gate-overlay');
+      if (!input || !overlay) return;
+      var code = input.value.trim().toLowerCase();
+      if (code === '1234r') {
+        document.body.classList.remove('locked-body');
+        overlay.style.display = 'none';
+      } else {
+        if (errorMsg) errorMsg.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    };
+  </script>
 
   <!-- Top Application Header -->
   <header class="app-header">
@@ -421,17 +460,17 @@
   <div id="debrief-modal" class="modal-overlay" style="display:none;"></div>
 
   <!-- JavaScript Modules -->
-  <script src="js/audio.js"></script>
-  <script src="js/monitor.js"></script>
-  <script src="js/data/scenarios.js"></script>
-  <script src="js/data/protocols.js"></script>
-  <script src="js/decoder.js"></script>
-  <script src="js/actor_station.js"></script>
-  <script src="js/simulator.js"></script>
-  <script src="js/protocols_view.js"></script>
-  <script src="js/sbar.js"></script>
-  <script src="js/briefing.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/audio.js?v=3"></script>
+  <script src="js/monitor.js?v=3"></script>
+  <script src="js/data/scenarios.js?v=3"></script>
+  <script src="js/data/protocols.js?v=3"></script>
+  <script src="js/decoder.js?v=3"></script>
+  <script src="js/actor_station.js?v=3"></script>
+  <script src="js/simulator.js?v=3"></script>
+  <script src="js/protocols_view.js?v=3"></script>
+  <script src="js/sbar.js?v=3"></script>
+  <script src="js/briefing.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
 
 </body>
 </html>
